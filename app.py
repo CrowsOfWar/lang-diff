@@ -6,7 +6,7 @@ import dateutil.parser
 import datetime
 import os.path
 
-cache_location = '_date_cache.txt'
+cache_location = '_commitcache.txt'
 
 def isFloat(string):
     try:
@@ -45,7 +45,7 @@ def write_cache(sha):
 
 def get_commit_date(sha):
     if not sha:
-        return datetime.datetime(datetime.MIN_YEAR, 1, 1)
+        return datetime.datetime(datetime.MINYEAR, 1, 1)
 
     commit_json = urllib.request.urlopen(base_url + 'commits/' + sha).read()
     commit = json.loads(commit_json)
@@ -67,7 +67,7 @@ new_date = get_commit_date(dev_branch_sha)
 old_date = get_commit_date(get_cache())
 
 print('Comparing new_date ' + str(new_date) + ' vs old_date ' + str(old_date))
-if dev_branch_date > old_date:
+if new_date > old_date:
     print('Found new dev branch commit!')
 else:
     print('No new dev branch commit, skipping')

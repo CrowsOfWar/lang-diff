@@ -35,21 +35,22 @@ def find_dev_branch(branches):
     return develop_branch
 
 def get_cache():
-
     if not os.path.isfile(cache_location):
         open(cache_location, 'x')
 
-    try:
-        return dateutil.parser.parse(open(cache_location, 'r').read())
-    except ValueError:
-        return datetime.datetime(datetime.MINYEAR, 1, 1)
+    return open(cache_location, 'r').read()
 
-# date is a datetime.datetime object
-def write_cache(date):
-    format = '%Y-%m-%dT%H%M%S%z'
-    date_str = date.strftime(format)
+def write_cache(sha):
+    open(cache_location, 'w').write(sha)
 
-    open(cache_location, 'w').write(date_str)
+def get_commit_date(sha):
+    if not sha:
+        return datetime.datetime(datetime.MIN_YEAR, 1, 1)
+
+    commit_json = urllib.request.urlopen(base_url + 'commits/' + sha).read()
+    commit = json.loads(commit_json)
+    date_str = commit['commit']['author']['date']
+    return dateutil.parser.parse(date_str)
 
 base_url = 'https://api.github.com/repos/CrowsOfWar/AvatarMod/'
 
@@ -60,16 +61,17 @@ dev_branch_name = find_dev_branch(branches)
 dev_branch_json = urllib.request.urlopen(base_url + 'branches/' + dev_branch_name).read()
 dev_branch = json.loads(dev_branch_json)
 
-dev_branch_date_str = dev_branch['commit']['commit']['author']['date']
-dev_branch_date = dateutil.parser.parse(dev_branch_date_str)
+dev_branch_sha = dev_branch['commit']['sha']
 
-old_date = get_cache()
+new_date = get_commit_date(dev_branch_sha)
+old_date = get_commit_date(get_cache())
 
+print('Comparing new_date ' + str(new_date) + ' vs old_date ' + str(old_date))
 if dev_branch_date > old_date:
     print('Found new dev branch commit!')
 else:
     print('No new dev branch commit, skipping')
 
-write_cache(dev_branch_date)
+#write_cache(dev_branch_date)
 
 #print(str(dev_branch_date) + ' ' + datetime.datetime.strptime(str(dev_branch_date)))

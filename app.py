@@ -27,11 +27,16 @@ def find_dev_branch(branches):
                 develop_branch = branch_name
                 develop_version = branch_version
 
-    print('Develop branch ' + develop_branch + ' with version ' + str(develop_version))
     return develop_branch
 
 base_url = 'https://api.github.com/repos/CrowsOfWar/AvatarMod/'
 
 branches_json = urllib.request.urlopen(base_url + 'branches').read()
 branches = json.loads(branches_json)
-find_dev_branch(branches)
+dev_branch_name = find_dev_branch(branches)
+
+dev_branch_json = urllib.request.urlopen(base_url + 'branches/' + dev_branch_name)
+dev_branch = json.loads(dev_branch_json)
+
+dev_branch_date = dev_branch['commit']['commit']['date']
+print(dev_branch_date)

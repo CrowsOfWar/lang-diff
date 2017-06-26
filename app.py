@@ -3,6 +3,7 @@ from diff import gen_diff
 import urllib.request
 import json
 import dateutil.parser
+import datetime
 
 def isFloat(string):
     try:
@@ -30,6 +31,25 @@ def find_dev_branch(branches):
 
     return develop_branch
 
+def get_cache():
+    try:
+        file = open('_date_cache.txt', 'r')
+    except:
+        file = open('_date_cache.txt', 'w')
+
+    return dateutil.parser.parse(file.read())
+
+# date is a datetime.datetime object
+def write_cache(date):
+    format = '%Y-%m-%dT%H%M%S%z'
+    date_str = date.strftime(format)
+    print('Date string: ' + date_str)
+
+    back = dateutil.parser.parse(date_str)
+    print('Back into an object: ' + back + ' ; is same? ' + (back == date))
+
+get_cache()
+
 base_url = 'https://api.github.com/repos/CrowsOfWar/AvatarMod/'
 
 branches_json = urllib.request.urlopen(base_url + 'branches').read()
@@ -42,4 +62,6 @@ dev_branch = json.loads(dev_branch_json)
 dev_branch_date_str = dev_branch['commit']['commit']['author']['date']
 dev_branch_date = dateutil.parser.parse(dev_branch_date_str)
 
-print(dev_branch_date)
+write_cache(dev_branch_date)
+
+#print(str(dev_branch_date) + ' ' + datetime.datetime.strptime(str(dev_branch_date)))

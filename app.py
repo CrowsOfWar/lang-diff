@@ -2,6 +2,7 @@
 from diff import gen_diff
 import urllib.request
 import json
+import dateutil.parser
 
 def isFloat(string):
     try:
@@ -38,5 +39,7 @@ dev_branch_name = find_dev_branch(branches)
 dev_branch_json = urllib.request.urlopen(base_url + 'branches/' + dev_branch_name).read()
 dev_branch = json.loads(dev_branch_json)
 
-dev_branch_date = dev_branch['commit']['commit']['author']['date']
+dev_branch_date_str = dev_branch['commit']['commit']['author']['date']
+dev_branch_date = dateutil.parser.parse(dev_branch_date_str)
+
 print(dev_branch_date)

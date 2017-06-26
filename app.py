@@ -35,8 +35,8 @@ branches_json = urllib.request.urlopen(base_url + 'branches').read()
 branches = json.loads(branches_json)
 dev_branch_name = find_dev_branch(branches)
 
-dev_branch_json = urllib.request.urlopen(base_url + 'branches/' + dev_branch_name)
+dev_branch_json = urllib.request.urlopen(base_url + 'branches/' + dev_branch_name).read()
 dev_branch = json.loads(dev_branch_json)
 
-dev_branch_date = dev_branch['commit']['commit']['date']
+dev_branch_date = dev_branch['commit']['commit']['author']['date']
 print(dev_branch_date)

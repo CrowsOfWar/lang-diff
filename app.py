@@ -4,6 +4,9 @@ import urllib.request
 import json
 import dateutil.parser
 import datetime
+import os.path
+
+cache_location = '_date_cache.txt'
 
 def isFloat(string):
     try:
@@ -32,23 +35,21 @@ def find_dev_branch(branches):
     return develop_branch
 
 def get_cache():
-    try:
-        file = open('_date_cache.txt', 'r')
-    except:
-        file = open('_date_cache.txt', 'w')
 
-    return dateutil.parser.parse(file.read())
+    if not os.path.isfile(cache_location):
+        open(cache_location, 'x')
+
+    try:
+        return dateutil.parser.parse(open(cache_location, 'r').read())
+    except ValueError:
+        return datetime.datetime(datetime.MINYEAR, 1, 1)
 
 # date is a datetime.datetime object
 def write_cache(date):
     format = '%Y-%m-%dT%H%M%S%z'
     date_str = date.strftime(format)
-    print('Date string: ' + date_str)
 
-    back = dateutil.parser.parse(date_str)
-    print('Back into an object: ' + back + ' ; is same? ' + (back == date))
-
-get_cache()
+    open(cache_location, 'w').write(date_str)
 
 base_url = 'https://api.github.com/repos/CrowsOfWar/AvatarMod/'
 
@@ -61,6 +62,13 @@ dev_branch = json.loads(dev_branch_json)
 
 dev_branch_date_str = dev_branch['commit']['commit']['author']['date']
 dev_branch_date = dateutil.parser.parse(dev_branch_date_str)
+
+old_date = get_cache()
+
+if dev_branch_date > old_date:
+    print('Found new dev branch commit!')
+else:
+    print('No new dev branch commit, skipping')
 
 write_cache(dev_branch_date)
 

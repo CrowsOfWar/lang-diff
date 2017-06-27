@@ -55,7 +55,11 @@ def get_commit_date(sha):
 
 def get_file(sha, path):
     url = 'https://raw.githubusercontent.com/CrowsOfWar/AvatarMod/' + sha + '/' + path
-    return urllib.request.urlopen(url).read()
+    try:
+        return urllib.request.urlopen(url).read()
+    except urllib.error.HTTPError:
+        print('Error reaching url ' + url)
+        return ''
 
 base_url = 'https://api.github.com/repos/CrowsOfWar/AvatarMod/'
 
@@ -66,14 +70,25 @@ dev_branch_name = find_dev_branch(branches)
 dev_branch_json = urllib.request.urlopen(base_url + 'branches/' + dev_branch_name).read()
 dev_branch = json.loads(dev_branch_json)
 
-dev_branch_sha = dev_branch['commit']['sha']
+new_sha = dev_branch['commit']['sha']
+old_sha = get_cache()
 
-new_date = get_commit_date(dev_branch_sha)
-old_date = get_commit_date(get_cache())
+new_date = get_commit_date(new_sha)
+old_date = get_commit_date(old_sha)
 
 print('Comparing new_date ' + str(new_date) + ' vs old_date ' + str(old_date))
 if new_date > old_date:
     print('Found new dev branch commit!')
+
+    diff = ''
+    if new_sha:
+        new_lang = get_file(new_sha, 'src/main/resources/assets/avatarmod/lang/en_US.lang')
+        old_lang = get_file(old_sha, 'src/main/resources/assets/avatarmod/lang/en_US.lang')
+    else:
+        diff = get_file(new_sha, 'src/main/resources/assets/avatarmod/lang/en_US.lang')
+
+    print('\nDiff:\n' + diff)
+
 else:
     print('No new dev branch commit, skipping')
 

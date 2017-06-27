@@ -57,7 +57,7 @@ def get_commit_date(sha):
 def get_file(sha, path):
     url = 'https://raw.githubusercontent.com/CrowsOfWar/AvatarMod/' + sha + '/' + path
     try:
-        return str(urllib.request.urlopen(url).read())
+        return str(urllib.request.urlopen(url).read().decode('ascii'))
     except urllib.error.HTTPError:
         print('Error reaching url ' + url)
         return ''

@@ -17,8 +17,8 @@ def gen_diff(text1, text2):
         val = line[line.index('=') + 1:]
 
         if key not in file1Contents:
-          changed += line + '\n'
+          changedLines += line + '\n'
         if key in file1Contents and val != file1Contents[key]:
           newLines += line + '\n'
 
-    return '<< NEW >>\n\n' + newLines + '\n\n<< CHANGED >>\n\n' + changed
+    return '<< NEW >>\n\n' + newLines + '\n\n<< CHANGED >>\n\n' + changedLines

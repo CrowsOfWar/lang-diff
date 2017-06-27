@@ -78,19 +78,25 @@ new_date = get_commit_date(new_sha)
 old_date = get_commit_date(old_sha)
 
 if new_date > old_date:
-    print('Found changes between lang file!\n\n')
 
     diff = ''
     if old_sha:
         new_lang = get_file(new_sha, 'src/main/resources/assets/avatarmod/lang/en_US.lang')
         old_lang = get_file(old_sha, 'src/main/resources/assets/avatarmod/lang/en_US.lang')
+        if new_lang != old_lang:
+            diff = gen_diff(old_lang, new_lang)
     else:
         diff = get_file(new_sha, 'src/main/resources/assets/avatarmod/lang/en_US.lang')
 
     diff = diff.replace('\\n', '\n')
-    print(diff)
 
-    write_cache(new_sha)
+    if diff:
+        print('Found changes between lang file!\n\n')
+        print(diff)
+    else:
+        print('Lang file unchanged')
+
+    #write_cache(new_sha)
 
 else:
     print('Lang file unchanged')

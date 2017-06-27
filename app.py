@@ -77,9 +77,8 @@ old_sha = get_cache()
 new_date = get_commit_date(new_sha)
 old_date = get_commit_date(old_sha)
 
-print('Comparing new_date ' + str(new_date) + ' vs old_date ' + str(old_date))
 if new_date > old_date:
-    print('Found new dev branch commit!')
+    print('Found changes between lang file!\n\n')
 
     diff = ''
     if old_sha:
@@ -89,13 +88,9 @@ if new_date > old_date:
         diff = get_file(new_sha, 'src/main/resources/assets/avatarmod/lang/en_US.lang')
 
     diff = diff.replace('\\n', '\n')
-    print('\nDiff:\n' + diff)
+    print(diff)
 
     write_cache(new_sha)
 
 else:
-    print('No new dev branch commit, skipping')
-
-#write_cache(dev_branch_date)
-
-#print(str(dev_branch_date) + ' ' + datetime.datetime.strptime(str(dev_branch_date)))
+    print('Lang file unchanged')

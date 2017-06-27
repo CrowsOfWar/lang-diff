@@ -1,7 +1,8 @@
 
 def gen_diff(text1, text2):
 
-    changed = ''
+    newLines = ''
+    changedLines = ''
 
     file1Contents = dict()
     for line in text1.split('\n'):
@@ -15,10 +16,9 @@ def gen_diff(text1, text2):
         key = line[:line.index('=')]
         val = line[line.index('=') + 1:]
 
-        keyChanged = key in file1Contents and val != file1Contents[key]
-        keyAdded = key not in file1Contents
-        if keyChanged or keyAdded:
-          # changed value of (key) from (file1Contents[key]) -> (val)
+        if key not in file1Contents:
           changed += line + '\n'
+        if key in file1Contents and val != file1Contents[key]:
+          newLines += line + '\n'
 
-    return changed
+    return '<< NEW >>\n\n' + newLines + '\n\n<< CHANGED >>\n\n' + changed

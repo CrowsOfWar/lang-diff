@@ -40,7 +40,10 @@ def get_cache():
     if not os.path.isfile(cache_location):
         open(cache_location, 'x')
 
-    return open(cache_location, 'r').read()
+    sha = open(cache_location, 'r').read()
+    # remove invisible characters
+    sha = re.sub('[^\w\d]', '', sha)
+    return sha
 
 def write_cache(sha):
     open(cache_location, 'w').write(sha)

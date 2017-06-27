@@ -5,6 +5,7 @@ import json
 import dateutil.parser
 import datetime
 import os.path
+import dateutil.tz;
 
 cache_location = '_commitcache.txt'
 
@@ -45,12 +46,16 @@ def write_cache(sha):
 
 def get_commit_date(sha):
     if not sha:
-        return datetime.datetime(datetime.MINYEAR, 1, 1)
+        return datetime.datetime(datetime.MINYEAR, 1, 1, 0, 0, 0, 0, dateutil.tz.tzutc())
 
     commit_json = urllib.request.urlopen(base_url + 'commits/' + sha).read()
     commit = json.loads(commit_json)
     date_str = commit['commit']['author']['date']
     return dateutil.parser.parse(date_str)
+
+def get_file(sha, path):
+    url = 'https://raw.githubusercontent.com/CrowsOfWar/AvatarMod/' + sha + '/' + path
+    return urllib.request.urlopen(url).read()
 
 base_url = 'https://api.github.com/repos/CrowsOfWar/AvatarMod/'
 

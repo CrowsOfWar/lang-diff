@@ -5,7 +5,8 @@ import json
 import dateutil.parser
 import datetime
 import os.path
-import dateutil.tz;
+import dateutil.tz
+import re
 
 cache_location = '_commitcache.txt'
 
@@ -56,7 +57,7 @@ def get_commit_date(sha):
 def get_file(sha, path):
     url = 'https://raw.githubusercontent.com/CrowsOfWar/AvatarMod/' + sha + '/' + path
     try:
-        return urllib.request.urlopen(url).read()
+        return str(urllib.request.urlopen(url).read())
     except urllib.error.HTTPError:
         print('Error reaching url ' + url)
         return ''
@@ -81,13 +82,16 @@ if new_date > old_date:
     print('Found new dev branch commit!')
 
     diff = ''
-    if new_sha:
+    if old_sha:
         new_lang = get_file(new_sha, 'src/main/resources/assets/avatarmod/lang/en_US.lang')
         old_lang = get_file(old_sha, 'src/main/resources/assets/avatarmod/lang/en_US.lang')
     else:
         diff = get_file(new_sha, 'src/main/resources/assets/avatarmod/lang/en_US.lang')
 
+    diff = diff.replace('\\n', '\n')
     print('\nDiff:\n' + diff)
+
+    write_cache(new_sha)
 
 else:
     print('No new dev branch commit, skipping')

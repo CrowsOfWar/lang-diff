@@ -16,10 +16,6 @@ def gen_diff(text1, text2):
         key = line[:line.index('=')]
         val = line[line.index('=') + 1:]
 
-        print('Lookat line ' + line)
-        print(' key ' + key)
-        print(' file1Contents[' + key + '] == ' + file1Contents[key])
-
         if key not in file1Contents:
           changed_lines += line + '\n'
         if key in file1Contents and val != file1Contents[key]:

@@ -96,7 +96,7 @@ if new_date > old_date:
     else:
         print('Lang file unchanged')
 
-    #write_cache(new_sha)
+    write_cache(new_sha)
 
 else:
     print('Lang file unchanged')

@@ -104,3 +104,5 @@ if new_date > old_date:
 
 else:
     print('Lang file unchanged')
+
+input('\nPress ENTER to exit')

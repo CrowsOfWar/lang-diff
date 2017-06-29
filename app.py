@@ -52,7 +52,7 @@ def get_commit_date(sha):
     if not sha:
         return datetime.datetime(datetime.MINYEAR, 1, 1, 0, 0, 0, 0, dateutil.tz.tzutc())
 
-    commit_json = urllib.request.urlopen(base_url + 'commits/' + sha).read()
+    commit_json = urllib.request.urlopen(base_url + 'commits/' + sha).read().decode('utf8')
     commit = json.loads(commit_json)
     date_str = commit['commit']['author']['date']
     return dateutil.parser.parse(date_str)
@@ -68,11 +68,11 @@ def get_file(sha, path):
 
 base_url = 'https://api.github.com/repos/CrowsOfWar/AvatarMod/'
 
-branches_json = urllib.request.urlopen(base_url + 'branches').read()
+branches_json = urllib.request.urlopen(base_url + 'branches').read().decode('utf8')
 branches = json.loads(branches_json)
 dev_branch_name = find_dev_branch(branches)
 
-dev_branch_json = urllib.request.urlopen(base_url + 'branches/' + dev_branch_name).read()
+dev_branch_json = urllib.request.urlopen(base_url + 'branches/' + dev_branch_name).read().decode('utf8')
 dev_branch = json.loads(dev_branch_json)
 
 new_sha = dev_branch['commit']['sha']

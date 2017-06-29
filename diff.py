@@ -29,4 +29,5 @@ def gen_diff(text1, text2):
         diff += '<<   Changed   >>\n\n'
         diff += changed_lines
 
+    diff += '<< end of diff >>\n\n'
     return diff

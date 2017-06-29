@@ -1,2 +1,5 @@
 _commitcache.txt
 __pycache__
+build/
+dist/
+app.spec
